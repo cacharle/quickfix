@@ -118,14 +118,29 @@ configure_package_config_file(
     "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfig.cmake"
     INSTALL_DESTINATION lib/cmake/quickfix
 )
+# export(TARGETS quickfix
+#        FILE "${CMAKE_CURRENT_BINARY_DIR}/quickfixTargets.cmake")
 install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src/C++
         DESTINATION include
         FILES_MATCHING PATTERN "*.h")
-install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfigVersion.cmake"
-    DESTINATION lib/cmake/quickfix
+# install(FILES
+#     "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfig.cmake"
+#     "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfigVersion.cmake"
+#     DESTINATION lib/cmake/quickfix
+# )
+# install(EXPORT quickfixTargets
+#     FILE quickfixTargets.cmake
+#     NAMESPACE quickfix::
+#     DESTINATION lib/cmake/quickfix
+# )
+
+install(TARGETS quickfix
+    EXPORT quickfixTargets
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
 )
+
 install(EXPORT quickfixTargets
     FILE quickfixTargets.cmake
     NAMESPACE quickfix::
