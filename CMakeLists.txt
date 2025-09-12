@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 set (quickfix_PROJECT_NAME quickfix)
 
@@ -21,24 +21,24 @@ if( CMAKE_CXX_STANDARD EQUAL 17 )
   option( HAVE_CXX17 "Using C++17" ON)
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/cmake/")
 
 include(QuickfixPlatformSettings)
 include(QuickfixPrebuildSetup)
 
 # Call cmake with-DHAVE_SSL=ON to compile with SSL. Similarly for others.
-option(HAVE_SSL "Build with SSL")
-option(HAVE_MYSQL "Build with MySQL")
-option(HAVE_POSTGRESQL "Build with PostgreSQL")
-option(HAVE_ODBC "Build with ODBC")
-option(HAVE_PYTHON "Build with default Python version")
-option(HAVE_PYTHON3 "Build with default Python3 version")
+option(HAVE_SSL "Build with SSL" OFF)
+option(HAVE_MYSQL "Build with MySQL" OFF)
+option(HAVE_POSTGRESQL "Build with PostgreSQL" OFF)
+option(HAVE_ODBC "Build with ODBC" OFF)
+option(HAVE_PYTHON "Build with default Python version" OFF)
+option(HAVE_PYTHON3 "Build with default Python3 version OFF")
 
 # add option to build shared or static
 option(QUICKFIX_SHARED_LIBS "Build using shared libraries" ON)
 # add option to build other targets
-option(QUICKFIX_EXAMPLES "Build quickfix examples" ON)
-option(QUICKFIX_TESTS "Build quickfix tests" ON)
+option(QUICKFIX_EXAMPLES "Build quickfix examples" OFF)
+option(QUICKFIX_TESTS "Build quickfix tests" OFF)
 
 #Make sure that a previous config.h has not undefined HAVE_SSL
 if(HAVE_SSL)
@@ -84,24 +84,24 @@ elseif (HAVE_PYTHON3)
   include_directories(${PYTHON_INCLUDE_DIRS})
 endif ()
 
-add_subdirectory(src)
+add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/src")
 
 if (QUICKFIX_EXAMPLES)
-  add_subdirectory(examples)
+  add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/examples")
 endif()
 
 if (QUICKFIX_TESTS)
   if( WIN32)
-    add_subdirectory(test)
+    add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/test")
   endif()
 endif()
 
 configure_file(cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/src/C++/config.h @ONLY)
 configure_file(cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/quickfix/config.h @ONLY)
-file(REMOVE config.h)
+# file(REMOVE config.h)
 
 
 configure_file(cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/quickfix/config.h @ONLY)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spec/ DESTINATION share/quickfix FILES_MATCHING PATTERN "FIX*.xml")
- 
+
