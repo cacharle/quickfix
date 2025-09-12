@@ -88,7 +88,7 @@ target_compile_features(quickfix PUBLIC cxx_std_11)
 # target_include_directories(quickfix PRIVATE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/src/C++)
 target_include_directories(quickfix
     PUBLIC
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${quickfix_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
         ${PROJECT_SOURCE_DIR}
