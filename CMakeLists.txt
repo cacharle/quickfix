@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_LIST_DIR}/cmake/")
 
 include(QuickfixPlatformSettings)
 include(QuickfixPrebuildSetup)
+include(CMakePackageConfigHelpers)
 
 # Call cmake with-DHAVE_SSL=ON to compile with SSL. Similarly for others.
 option(HAVE_SSL "Build with SSL" OFF)
@@ -101,7 +102,32 @@ configure_file(cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/quickfix/co
 # file(REMOVE config.h)
 
 
+
 configure_file(cmake_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/quickfix/config.h @ONLY)
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/spec/ DESTINATION share/quickfix FILES_MATCHING PATTERN "FIX*.xml")
 
+# Generate quickfixConfig.cmake and quickfixConfigVersion.cmake
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+configure_package_config_file(
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/quickfixConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/quickfix
+)
+install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/src/C++
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/quickfixConfigVersion.cmake"
+    DESTINATION lib/cmake/quickfix
+)
+install(EXPORT quickfixTargets
+    FILE quickfixTargets.cmake
+    NAMESPACE quickfix::
+    DESTINATION lib/cmake/quickfix
+)
