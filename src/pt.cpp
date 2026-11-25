@@ -107,17 +107,13 @@ static FIX44::MarketDataSnapshotFullRefresh makeMarketDataSnapshot() {
 TEST_CASE("TypeConversions", "[benchmark]") {
   BENCHMARK("IntegerToString") { return FIX::IntConvertor::convert(1234); };
 
-  BENCHMARK("StringToInteger") {
-    std::string value("1234");
-    return FIX::IntConvertor::convert(value);
-  };
+  std::string integerValue("1234");
+  BENCHMARK("StringToInteger") { return FIX::IntConvertor::convert(integerValue); };
 
   BENCHMARK("DoubleToString") { return FIX::DoubleConvertor::convert(123.45); };
 
-  BENCHMARK("StringToDouble") {
-    std::string value("123.45");
-    return FIX::DoubleConvertor::convert(value);
-  };
+  std::string doubleValue("123.45");
+  BENCHMARK("StringToDouble") { return FIX::DoubleConvertor::convert(doubleValue); };
 }
 
 TEST_CASE("HeartbeatMessage", "[benchmark]") {
@@ -204,6 +200,20 @@ TEST_CASE("MarketDataSnapshotMessage", "[benchmark]") {
   BENCHMARK("Deserialize") { return message.setString(serialized, false, &dataDictionary); };
 
   BENCHMARK("DeserializeAndValidate") { return message.setString(serialized, true, &dataDictionary); };
+
+  FIX44::MarketDataSnapshotFullRefresh::NoMDEntries entry;
+  BENCHMARK("ReadEntries") {
+    FIX::MDEntryPx price;
+    FIX::MDEntrySize size;
+    FIX::NoMDEntries noMDEntries;
+    message.get(noMDEntries);
+    double total = 0;
+    for (int k = 1; k <= noMDEntries; ++k) {
+      message.getGroup(k, entry);
+      total += entry.get(price).getValue() + entry.get(size).getValue();
+    }
+    return total;
+  };
 }
 
 TEST_CASE("Validation", "[benchmark]") {
