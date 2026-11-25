@@ -162,7 +162,7 @@ void DataDictionary::iterate(const FieldMap &map, const MsgType &msgType) const 
   FieldMap::const_iterator i;
   for (i = map.begin(); i != map.end(); ++i) {
     const FieldBase &field = (*i);
-    if (i != map.begin() && (field.getTag() == lastField)) {
+    if (QUICKFIX_UNLIKELY(i != map.begin() && (field.getTag() == lastField))) {
       throw RepeatedTag(lastField);
     }
     checkHasValue(field);

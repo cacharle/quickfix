@@ -34,6 +34,15 @@
 #define PRAGMA_POP
 #endif
 
+// Using builtin_expect instead of the c++20 [[(un)likely]] attributes since the cmakelists forces c++17
+#if defined(__GNUC__) || defined(__clang__)
+#define QUICKFIX_LIKELY(x) __builtin_expect(!!(x), 1)
+#define QUICKFIX_UNLIKELY(x) __builtin_expect(!!(x), 0)
+#else
+#define QUICKFIX_LIKELY(x) (x)
+#define QUICKFIX_UNLIKELY(x) (x)
+#endif
+
 #ifndef _MSC_VER
 #include "Allocator.h"
 #endif

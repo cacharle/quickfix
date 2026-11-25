@@ -297,7 +297,7 @@ public:
 
   bool getGroup(const std::string &msg, int field, int &delim, const DataDictionary *&pDataDictionary) const {
     FieldToGroup::const_iterator i = m_groups.find(field);
-    if (i == m_groups.end()) {
+    if (QUICKFIX_LIKELY(i == m_groups.end())) {
       return false;
     }
 
